@@ -6,9 +6,11 @@ class DeliveryCarSetupOps < Formula
   version "1.2.0"
 
   def install
-    system "brew", "install", "--cask", "aircall"
-    system "brew", "install", "--cask", "slack"
-    system "brew", "install", "--cask", "google-chrome"
+    brew_bin = HOMEBREW_PREFIX/"bin/brew"
+
+    system brew_bin, "install", "--cask", "aircall"
+    system brew_bin, "install", "--cask", "slack"
+    system brew_bin, "install", "--cask", "google-chrome"
 
     dmg = buildpath/"assets/driver/MX-C52d_2111a_MacPS.dmg"
     raise "Driver DMG not found: #{dmg}" unless dmg.exist?
