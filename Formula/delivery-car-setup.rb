@@ -15,5 +15,6 @@ class DeliveryCarSetupDev < Formula
     system "brew", "install", "--cask", "insomnia"
     system "brew", "install", "--cask", "figma"
     system "brew", "install", "--cask", "notion"
+    system "brew", "install", "--cask", "docker"
   end
 end
