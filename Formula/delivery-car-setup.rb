@@ -1,4 +1,4 @@
-class DeliveryCarSetupDev < Formula
+class DeliveryCarSetup < Formula
   desc "Delivery Car full dev environment setup"
   homepage "https://deliverycar.fr"
   url "https://github.com/deliverycar/homebrew-deliverycar/archive/refs/tags/v1.0.0.tar.gz"
