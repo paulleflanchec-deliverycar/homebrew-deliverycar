@@ -2,7 +2,7 @@ class DeliveryCarSetupOps < Formula
   desc "Delivery Car OPS setup (Aircall, Slack, Chrome, printer driver)"
   homepage "https://deliverycar.fr"
   url "https://github.com/deliverycar/homebrew-deliverycar/archive/refs/tags/v1.2.0.tar.gz"
-  sha256 "SHA256_A_REMPLACER"
+  sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
   version "1.2.0"
 
   def install
