@@ -36,6 +36,27 @@ Commande installée:
 - [Homebrew](https://brew.sh/)
 - droits admin macOS (requis pour `delivery-car-setup-ops` car `sudo installer` est exécuté)
 
+## Installation rapide (copier/coller)
+
+```bash
+# Installer Homebrew (si non installé)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Charger brew dans la session shell
+if [ -x /opt/homebrew/bin/brew ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -x /usr/local/bin/brew ]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
+
+# Installer le tap Delivery Car + setup OPS
+brew tap paulleflanchec-deliverycar/homebrew-deliverycar https://github.com/paulleflanchec-deliverycar/homebrew-deliverycar.git
+brew install paulleflanchec-deliverycar/deliverycar/delivery-car-setup-ops
+
+# Lancer le setup OPS
+delivery-car-setup-ops
+```
+
 ## Installer le tap
 
 ```bash
@@ -57,6 +78,9 @@ brew install paulleflanchec-deliverycar/deliverycar/delivery-car-setup
 brew install paulleflanchec-deliverycar/deliverycar/delivery-car-setup-ops
 delivery-car-setup-ops
 ```
+
+Note:
+- si une app OPS est déjà installée, le script la saute automatiquement et continue.
 
 ## Structure du repo
 

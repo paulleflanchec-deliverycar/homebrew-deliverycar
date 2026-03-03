@@ -25,9 +25,29 @@ class DeliveryCarSetupOps < Formula
         exit 1
       fi
 
-      "$brew_bin" install --cask aircall
-      "$brew_bin" install --cask slack
-      "$brew_bin" install --cask google-chrome
+      install_cask_if_needed() {
+        cask="$1"
+        app_name="$2"
+
+        if "$brew_bin" list --cask "$cask" >/dev/null 2>&1; then
+          echo "Skipping $cask: already installed with Homebrew."
+          return 0
+        fi
+
+        if [ -d "/Applications/$app_name" ] || [ -d "$HOME/Applications/$app_name" ]; then
+          echo "Skipping $cask: $app_name already present."
+          return 0
+        fi
+
+        echo "Installing $cask..."
+        if ! "$brew_bin" install --cask "$cask"; then
+          echo "Skipping $cask: install failed, continuing." >&2
+        fi
+      }
+
+      install_cask_if_needed aircall "Aircall.app"
+      install_cask_if_needed slack "Slack.app"
+      install_cask_if_needed google-chrome "Google Chrome.app"
 
       dmg="#{opt_pkgshare}/MX-C52d_2111a_MacPS.dmg"
       if [ ! -f "$dmg" ]; then
