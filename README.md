@@ -64,7 +64,7 @@ brew install paulleflanchec-deliverycar/deliverycar/delivery-car-setup-ops
 ## Driver imprimante OPS
 
 La formule OPS attend le fichier:
-- `assets/drivers/MX-C52d_2111a_MacPS.dmg`
+- `assets/driver/MX-C52d_2111a_MacPS.dmg`
 
 Comportement de la formule:
 1. monte le DMG avec `hdiutil`
@@ -103,7 +103,7 @@ Cause: le fichier DMG est absent ou pas au chemin attendu.
 Vérifier la présence du fichier:
 
 ```bash
-ls -lah assets/drivers/MX-C52d_2111a_MacPS.dmg
+ls -lah assets/driver/MX-C52d_2111a_MacPS.dmg
 ```
 
 ### Validation syntaxe des formules

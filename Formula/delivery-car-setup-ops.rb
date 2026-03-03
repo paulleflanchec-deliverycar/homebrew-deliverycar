@@ -1,8 +1,8 @@
 class DeliveryCarSetupOps < Formula
   desc "Delivery Car OPS setup (Aircall, Slack, Chrome, printer driver)"
   homepage "https://deliverycar.fr"
-  url "https://github.com/deliverycar/homebrew-deliverycar/archive/refs/tags/v1.2.0.tar.gz"
-  sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+  url "https://github.com/paulleflanchec-deliverycar/homebrew-deliverycar/archive/refs/tags/v1.2.0.tar.gz"
+  sha256 "576ca228bd846fc64a9b7b3ccbf30e56882d81cdebeb51ccefd4729e31a12570"
   version "1.2.0"
 
   def install
@@ -10,7 +10,7 @@ class DeliveryCarSetupOps < Formula
     system "brew", "install", "--cask", "slack"
     system "brew", "install", "--cask", "google-chrome"
 
-    dmg = buildpath/"assets/drivers/MX-C52d_2111a_MacPS.dmg"
+    dmg = buildpath/"assets/driver/MX-C52d_2111a_MacPS.dmg"
     raise "Driver DMG not found: #{dmg}" unless dmg.exist?
 
     out = Utils.safe_popen_read("hdiutil", "attach", dmg.to_s, "-nobrowse", "-readonly")
