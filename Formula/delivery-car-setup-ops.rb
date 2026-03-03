@@ -6,23 +6,59 @@ class DeliveryCarSetupOps < Formula
   version "1.2.0"
 
   def install
-    brew_bin = HOMEBREW_PREFIX/"bin/brew"
-
-    system brew_bin, "install", "--cask", "aircall"
-    system brew_bin, "install", "--cask", "slack"
-    system brew_bin, "install", "--cask", "google-chrome"
-
     dmg = buildpath/"assets/driver/MX-C52d_2111a_MacPS.dmg"
     raise "Driver DMG not found: #{dmg}" unless dmg.exist?
 
-    out = Utils.safe_popen_read("hdiutil", "attach", dmg.to_s, "-nobrowse", "-readonly")
-    mountpoint = out.lines.reverse.find { |l| l.include?("/Volumes/") }&.split("\t")&.last&.strip
-    raise "Mountpoint not found" if mountpoint.to_s.empty?
+    pkgshare.install dmg
 
-    pkg = Dir["#{mountpoint}/**/*.pkg"].first
-    raise "No .pkg found in mounted DMG" if pkg.to_s.empty?
+    (bin/"delivery-car-setup-ops").write <<~BASH
+      #!/bin/bash
+      set -euo pipefail
 
-    system "sudo", "installer", "-pkg", pkg, "-target", "/"
-    system "hdiutil", "detach", mountpoint
+      brew_bin="#{HOMEBREW_PREFIX}/bin/brew"
+      if [ ! -x "$brew_bin" ]; then
+        brew_bin="$(command -v brew || true)"
+      fi
+
+      if [ -z "$brew_bin" ]; then
+        echo "brew not found." >&2
+        exit 1
+      fi
+
+      "$brew_bin" install --cask aircall
+      "$brew_bin" install --cask slack
+      "$brew_bin" install --cask google-chrome
+
+      dmg="#{opt_pkgshare}/MX-C52d_2111a_MacPS.dmg"
+      if [ ! -f "$dmg" ]; then
+        echo "Driver DMG not found: $dmg" >&2
+        exit 1
+      fi
+
+      out="$(hdiutil attach "$dmg" -nobrowse -readonly)"
+      mountpoint="$(printf "%s\\n" "$out" | awk -F "\\t" '/\\/Volumes\\// {mp=$NF} END {print mp}')"
+      if [ -z "$mountpoint" ]; then
+        echo "Mountpoint not found." >&2
+        exit 1
+      fi
+
+      pkg="$(find "$mountpoint" -name '*.pkg' -print -quit)"
+      if [ -z "$pkg" ]; then
+        echo "No .pkg found in mounted DMG." >&2
+        hdiutil detach "$mountpoint" >/dev/null 2>&1 || true
+        exit 1
+      fi
+
+      sudo installer -pkg "$pkg" -target /
+      hdiutil detach "$mountpoint"
+    BASH
+    chmod 0755, bin/"delivery-car-setup-ops"
+  end
+
+  def caveats
+    <<~EOS
+      Run the OPS setup command after installation:
+        delivery-car-setup-ops
+    EOS
   end
 end

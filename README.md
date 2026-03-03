@@ -27,6 +27,8 @@ Apps installées:
 Installation complémentaire:
 - monte le DMG d’un driver imprimante
 - installe un `.pkg` trouvé dans le volume monté
+Commande installée:
+- `delivery-car-setup-ops`
 
 ## Prérequis
 
@@ -53,6 +55,7 @@ brew install paulleflanchec-deliverycar/deliverycar/delivery-car-setup
 
 ```bash
 brew install paulleflanchec-deliverycar/deliverycar/delivery-car-setup-ops
+delivery-car-setup-ops
 ```
 
 ## Structure du repo
@@ -104,6 +107,19 @@ Vérifier la présence du fichier:
 
 ```bash
 ls -lah assets/driver/MX-C52d_2111a_MacPS.dmg
+```
+
+### Erreur `Operation not permitted @ dir_s_mkdir - /opt/homebrew/Caskroom/...`
+
+Cause: Homebrew sandboxe l'étape `install` d'une formule et bloque l'écriture dans `Caskroom`.
+
+Solution:
+- installer d'abord la formule OPS
+- exécuter ensuite la commande installée par la formule
+
+```bash
+brew install paulleflanchec-deliverycar/deliverycar/delivery-car-setup-ops
+delivery-car-setup-ops
 ```
 
 ### Validation syntaxe des formules
