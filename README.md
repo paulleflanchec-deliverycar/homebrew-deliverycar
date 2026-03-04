@@ -38,6 +38,26 @@ Commande installée:
 
 ## Installation rapide (copier/coller)
 
+### Setup DEV (complet)
+
+```bash
+# Installer Homebrew (si non installé)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Charger brew dans la session shell
+if [ -x /opt/homebrew/bin/brew ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -x /usr/local/bin/brew ]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
+
+# Installer le tap Delivery Car + setup DEV
+brew tap paulleflanchec-deliverycar/homebrew-deliverycar https://github.com/paulleflanchec-deliverycar/homebrew-deliverycar.git
+brew install paulleflanchec-deliverycar/deliverycar/delivery-car-setup
+```
+
+### Setup OPS (complet)
+
 ```bash
 # Installer Homebrew (si non installé)
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
