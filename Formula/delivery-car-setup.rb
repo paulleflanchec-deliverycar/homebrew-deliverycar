@@ -1,20 +1,91 @@
 class DeliveryCarSetup < Formula
   desc "Delivery Car full dev environment setup"
   homepage "https://deliverycar.fr"
-  url "https://github.com/deliverycar/homebrew-deliverycar/archive/refs/tags/v1.0.0.tar.gz"
-  sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
-  version "1.0.0"
+  url "https://github.com/paulleflanchec-deliverycar/homebrew-deliverycar/archive/refs/tags/v1.2.0.tar.gz"
+  sha256 "576ca228bd846fc64a9b7b3ccbf30e56882d81cdebeb51ccefd4729e31a12570"
+  version "1.2.0"
 
   depends_on "git"
   depends_on "node"
 
   def install
-    system "brew", "install", "--cask", "visual-studio-code"
-    system "brew", "install", "--cask", "slack"
-    system "brew", "install", "--cask", "google-chrome"
-    system "brew", "install", "--cask", "insomnia"
-    system "brew", "install", "--cask", "figma"
-    system "brew", "install", "--cask", "notion"
-    system "brew", "install", "--cask", "docker"
+    dmg = buildpath/"assets/driver/MX-C52d_2111a_MacPS.dmg"
+    raise "Driver DMG not found: #{dmg}" unless dmg.exist?
+
+    pkgshare.install dmg
+
+    (bin/"delivery-car-setup").write <<~BASH
+      #!/bin/bash
+      set -euo pipefail
+
+      brew_bin="#{HOMEBREW_PREFIX}/bin/brew"
+      if [ ! -x "$brew_bin" ]; then
+        brew_bin="$(command -v brew || true)"
+      fi
+
+      if [ -z "$brew_bin" ]; then
+        echo "brew not found." >&2
+        exit 1
+      fi
+
+      install_cask_if_needed() {
+        cask="$1"
+        app_name="$2"
+
+        if "$brew_bin" list --cask "$cask" >/dev/null 2>&1; then
+          echo "Skipping $cask: already installed with Homebrew."
+          return 0
+        fi
+
+        if [ -d "/Applications/$app_name" ] || [ -d "$HOME/Applications/$app_name" ]; then
+          echo "Skipping $cask: $app_name already present."
+          return 0
+        fi
+
+        echo "Installing $cask..."
+        if ! "$brew_bin" install --cask "$cask"; then
+          echo "Skipping $cask: install failed, continuing." >&2
+        fi
+      }
+
+      install_cask_if_needed visual-studio-code "Visual Studio Code.app"
+      install_cask_if_needed slack "Slack.app"
+      install_cask_if_needed google-chrome "Google Chrome.app"
+      install_cask_if_needed insomnia "Insomnia.app"
+      install_cask_if_needed figma "Figma.app"
+      install_cask_if_needed notion "Notion.app"
+      install_cask_if_needed docker "Docker.app"
+
+      dmg="#{opt_pkgshare}/MX-C52d_2111a_MacPS.dmg"
+      if [ ! -f "$dmg" ]; then
+        echo "Driver DMG not found: $dmg" >&2
+        exit 1
+      fi
+
+      out="$(hdiutil attach "$dmg" -nobrowse -readonly)"
+      mountpoint="$(printf "%s\\n" "$out" | awk -F "\\t" '/\\/Volumes\\// {mp=$NF} END {print mp}')"
+      if [ -z "$mountpoint" ]; then
+        echo "Mountpoint not found." >&2
+        exit 1
+      fi
+
+      pkg="$(find "$mountpoint" -name '*.pkg' -print -quit)"
+      if [ -z "$pkg" ]; then
+        echo "No .pkg found in mounted DMG." >&2
+        hdiutil detach "$mountpoint" >/dev/null 2>&1 || true
+        exit 1
+      fi
+
+      sudo installer -pkg "$pkg" -target /
+      hdiutil detach "$mountpoint"
+    BASH
+    chmod 0755, bin/"delivery-car-setup"
+  end
+
+  def caveats
+    <<~EOS
+      Run the DEV setup command after installation:
+        delivery-car-setup
+    EOS
   end
 end

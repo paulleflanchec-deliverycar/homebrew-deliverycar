@@ -14,6 +14,11 @@ Apps installées:
 - `figma`
 - `notion`
 - `docker`
+Installation complémentaire:
+- monte le DMG d’un driver imprimante
+- installe un `.pkg` trouvé dans le volume monté
+Commande installée:
+- `delivery-car-setup`
 Dependencies:
 - `git`
 - `node`
@@ -34,7 +39,7 @@ Commande installée:
 
 - macOS
 - [Homebrew](https://brew.sh/)
-- droits admin macOS (requis pour `delivery-car-setup-ops` car `sudo installer` est exécuté)
+- droits admin macOS (requis pour `delivery-car-setup` et `delivery-car-setup-ops` car `sudo installer` est exécuté)
 
 ## Installation rapide (copier/coller)
 
@@ -54,6 +59,9 @@ fi
 # Installer le tap Delivery Car + setup DEV
 brew tap paulleflanchec-deliverycar/homebrew-deliverycar https://github.com/paulleflanchec-deliverycar/homebrew-deliverycar.git
 brew install paulleflanchec-deliverycar/deliverycar/delivery-car-setup
+
+# Lancer le setup DEV
+delivery-car-setup
 ```
 
 ### Setup OPS (complet)
@@ -90,6 +98,7 @@ Nom de tap utilisé ensuite par Homebrew:
 
 ```bash
 brew install paulleflanchec-deliverycar/deliverycar/delivery-car-setup
+delivery-car-setup
 ```
 
 ## Installer le setup OPS
@@ -100,7 +109,7 @@ delivery-car-setup-ops
 ```
 
 Note:
-- si une app OPS est déjà installée, le script la saute automatiquement et continue.
+- si une app DEV ou OPS est déjà installée, le script la saute automatiquement et continue.
 
 ## Structure du repo
 
@@ -108,9 +117,9 @@ Note:
 - `Formula/delivery-car-setup-ops.rb`
 - `assets/` (assets utilisés par les formules)
 
-## Driver imprimante OPS
+## Driver imprimante DEV et OPS
 
-La formule OPS attend le fichier:
+Les formules DEV et OPS attendent le fichier:
 - `assets/driver/MX-C52d_2111a_MacPS.dmg`
 
 Comportement de la formule:
@@ -158,10 +167,13 @@ ls -lah assets/driver/MX-C52d_2111a_MacPS.dmg
 Cause: Homebrew sandboxe l'étape `install` d'une formule et bloque l'écriture dans `Caskroom`.
 
 Solution:
-- installer d'abord la formule OPS
+- installer d'abord la formule DEV ou OPS
 - exécuter ensuite la commande installée par la formule
 
 ```bash
+brew install paulleflanchec-deliverycar/deliverycar/delivery-car-setup
+delivery-car-setup
+
 brew install paulleflanchec-deliverycar/deliverycar/delivery-car-setup-ops
 delivery-car-setup-ops
 ```
